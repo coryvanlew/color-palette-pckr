@@ -1,110 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Color Palette Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    #color-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .color-box {
-      width: 100px;
-      height: 100px;
-      margin: 10px;
-      display: inline-block;
-      cursor: pointer;
-    }
-    .color-code {
-      font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mayan Color Palette Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #colorBank {
+            width: 100px;
+            display: grid;
+            grid-template-columns: repeat(5, 20px);
+            gap: 5px;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+        #palette {
+            width: 300px;
+            text-align: center;
+        }
+        .palette-color {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            border: 1px solid #000;
+        }
+    </style>
 </head>
 <body>
-  <h1>Color Palette Generator</h1>
-  <div id="color-container"></div>
-  <button id="generate-palette">Generate Palette</button>
-  <script>
-    let mayanColorBank = [
-  // Reds
-  '#FF0000', '#FF6347', '#D43E68',
-  // Oranges
-  '#FFA500', '#FF8C00', '#FF4500',
-  // Yellows
-  '#FFFF00', '#FFD700', '#FFA07A',
-  // Greens
-  '#008000', '#228B22', '#00FF00',
-  // Teals
-  '#008080', '#00CED1', '#20B2AA',
-  // Blues
-  '#0000FF', '#1E90FF', '#4169E1',
-  // Purples
-  '#800080', '#9370DB', '#8A2BE2',
-  // Browns
-  '#A0522D', '#D2691E', '#8B4513',
-  // Grays
-  '#808080', '#A9A9A9', '#D3D3D3',
-  // Whites
-  '#FFFFFF', '#F0FFFF', '#FFFAFA',
-  // Blacks
-  '#000000', '#333333', '#666666'
+    <div id="colorBank"></div>
+    <div id="palette"></div>
+
+    <script>
+        const mayanColors = [
+            '#FF0000', '#00FF00', '#0000FF', '#FF00FF',
+            '#00FFFF', '#FFA500', '#FF1493', '#32CD32', '#800080',
+            '#FFD700', '#9400D3', '#FF4500', '#00CED1', '#FF69B4',
+            '#8A2BE2', '#00FF7F', '#FF6347', '#7CFC00', '#FF8C00',
+	    '#FF91AF', '#B5627C', '#512032', '#1D2032', 
+	    '#FF2610', '#B73A34', '#9E1912', '#5B0E0C',
+            '#FFAE6C', '#FF6D00', '#993E00', '#421E00',
+            '#FFE6A1', '#FFB600', '#FFF200', '#8E6A1A',
+            '#C9F299', '#90FF00', '#6E8251', '#414F29',
+            '#A1FFB5', '#59D16F', '#008413', '#003807',
+            '#97FFFF', '#00FFF8', '#1BBFB7', '#OD5E56',
+            '#80D5FF', '#00C3FF', '#008B99', '#083335',
+            '#77A3FC', '#0062FF', '#154893', '#102B4C',
+            '#646CFF', '#0000FF', '#00007F', '#1B1B3F',
+            '#72518E', '#46315B', '#3C0E72', '#1A0638',
+            '#838974', '#C4C19F', '#70604A', '#473E34',
+            '#D85F3F', '#A4B751', '#FFFFFF', '#000000',
+            '#929299', '#5B5B6B', '#2A2A3F', '#09090C',
+            '#1F77B2', '#BA8EBC', '#A256A8', '#375B45',
 ];
 
-    ];
 
-    function displayColors() {
-      const colorContainer = document.getElementById('color-container');
-      colorContainer.innerHTML = '';
+        const colorBank = document.getElementById('colorBank');
+        const paletteDiv = document.getElementById('palette');
 
-      mayanColorBank.forEach(color => {
-        const colorBox = document.createElement('div');
-        colorBox.className = 'color-box';
-        colorBox.style.backgroundColor = color;
-        colorBox.addEventListener('click', () => {
-          removeColor(color);
-          displayColors();
-        });
+        // Function to generate a random color code
+        function getRandomColor() {
+            const randomIndex = Math.floor(Math.random() * mayanColors.length);
+            return mayanColors[randomIndex];
+        }
 
-        const colorCode = document.createElement('div');
-        colorCode.className = 'color-code';
-        colorCode.textContent = color;
-        
-        colorBox.appendChild(colorCode);
-        colorContainer.appendChild(colorBox);
-      });
-    }
+        // Function to add a color box to the color bank
+        function addColorBox(color) {
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = color;
 
-    function addColor() {
-      const colorInput = prompt('Enter a color code (e.g., #RRGGBB):');
-      if (colorInput) {
-        mayanColorBank.push(colorInput);
-        displayColors();
-      }
-    }
+            // Add a click event listener to select the color
+            colorBox.addEventListener('click', () => {
+                generatePalette(color);
+            });
 
-    function removeColor(color) {
-      const index = mayanColorBank.indexOf(color);
-      if (index !== -1) {
-        mayanColorBank.splice(index, 1);
-      }
-    }
+            colorBank.appendChild(colorBox);
+        }
 
-    document.getElementById('generate-palette').addEventListener('click', () => {
-      const colorPalettes = [];
+        // Function to generate a color palette
+        function generatePalette(baseColor) {
+            paletteDiv.innerHTML = '';
 
-      for (let i = 0; i < 16; i++) {
-        const randomIndex = Math.floor(Math.random() * mayanColorBank.length);
-        colorPalettes.push(mayanColorBank[randomIndex]);
-      }
+            for (let i = 0; i < 5; i++) {
+                const color = getRandomColor();
+                const paletteColor = document.createElement('div');
+                paletteColor.className = 'palette-color';
+                paletteColor.style.backgroundColor = color;
 
-      alert('Generated Palette:\n\n' + colorPalettes.join('\n'));
-    });
+                const colorCode = document.createElement('p');
+                colorCode.textContent = color;
 
-    displayColors();
-  </script>
+                paletteDiv.appendChild(paletteColor);
+                paletteDiv.appendChild(colorCode);
+            }
+        }
+
+        // Populate the color bank with initial colors
+        for (let i = 0; i < 50; i++) {
+            const color = getRandomColor();
+            addColorBox(color);
+        }
+    </script>
 </body>
 </html>
